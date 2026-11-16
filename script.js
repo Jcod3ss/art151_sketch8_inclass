@@ -1,6 +1,6 @@
 //SKETCH 8
-//COMPLETED BY: your name
-///DATE: 
+//COMPLETED BY: Joseph Vasquez
+///DATE: 11/16/26
 
 nn.on("load", () => {
 
@@ -30,7 +30,7 @@ nn.on("load", () => {
     },
 
     // background color
-
+background:[211,211,211]
     // background settings
 
   });
@@ -60,16 +60,41 @@ nn.on("load", () => {
 
   // player sprite
 
+  // sprite file()
   loadSprite(
-    "name",
+    "name", assets/name.png,);{
 
-    // sprite file
-
-    {
-
-      // sprite animation
-
-    }
+// sprite animation
+    
+      sliceX: 4,
+      sliceY: 4,
+anims: {
+  foward{
+  from: 0,
+  to: 3,
+  speed: 5,
+  loop: true,
+},
+  "left":{
+  from: 4,
+  to: 7,
+  speed: 10,
+  loop: true,
+      },
+  "right":{
+   from: 8,
+  to: 11,
+  speed: 10,
+  loop: true,
+      },
+      back:
+      from:12,
+      to: 15,
+      speed:10,
+      loop: true,
+},
+     
+    },
   );
 
   // idle sprite
@@ -89,7 +114,7 @@ nn.on("load", () => {
   // enemy sprite
 
   loadSprite(
-    "name",
+    "name", assets/name.png);
 
     // enemy file
   );
@@ -97,7 +122,7 @@ nn.on("load", () => {
   // collectible sprite
 
   loadSprite(
-    "name",
+    "name",assets.name.png);
 
     // collectible file
   );
@@ -107,19 +132,19 @@ nn.on("load", () => {
   // AUDIO ASSETS
 
   loadSound(
-    "name",
+    "name","assets/name.mp3");
 
     // sound file
   );
 
   loadSound(
-    "name",
+    "name", "assets/name.wav");
 
     // sound file
   );
 
   loadMusic(
-    "name",
+    "name", "assets/name.wav");
 
     // music file
   );
@@ -129,9 +154,20 @@ nn.on("load", () => {
   // HELPERS
 
   function playSoundEffect () {
+if(!isPlaying){
+  isPlaying = true;
+  soundEffect = play("name",
+                     { 
+    volume: 0.04,
+  });
 
-    // sound logic
+soundEffect.onEnd(() => {
+  isPlaying = false;
+})
+ // sound logic
 
+ }
+   
   }
 
 
@@ -139,6 +175,16 @@ nn.on("load", () => {
   function makePlatform (x, y, w, colorValue) {
 
     add([
+      rect(w, 40),
+      area(),
+      outline(6),
+      pos(x,y),
+      body({
+        isStatic: true
+      }),
+      color(colorValue),
+      "platform"
+      
 
       // platform setup
 
@@ -151,6 +197,13 @@ nn.on("load", () => {
   function spawnCollectible () {
 
     add([
+      sprite("kat"),
+      pos(0,width()),0,height())),
+      scale(rand(0.5, 1.5)),
+      roate(rand(0,65)),
+      area(),
+      anchor("center"),
+      "name"
 
       // collectible setup
 
@@ -163,10 +216,18 @@ nn.on("load", () => {
   function spawnEnemy () {
 
     const enemy = add([
-
-      // enemy setup
-
+      sprite("name"),
+      pos(rand(100,width()-100),
+         rand(100,height()-100)),
+      area(),
+      anchor("center"),
+      "enemy"
     ]);
+    wait(rand(3,30),()=> {
+      if(enemy.exist()){
+        destroy(enemy);
+      }
+    })
 
     // enemy timer
 
@@ -175,9 +236,11 @@ nn.on("load", () => {
 
 
   function spawnEnemyWave () {
-
+const amount = randi(2,5)
     // wave logic
-
+for(let i = 0, i < amount; i++){
+  spawnEnemy();
+}
   }
 
 
@@ -191,13 +254,20 @@ nn.on("load", () => {
     let facing = RIGHT;
 
     const scoreText = add([
-
+text(gameScore.toString(),{
+  size: 24,
+}),
+      pos(24,24),
+      color(BLACK),
       // score display
 
     ]);
 
     const timer = add([
-
+text(timeLeft.toFixed(0)),
+      pos(width()-24,24),
+      anchor("topright"),
+      color(BLACK)
       // timer display
 
     ]);
@@ -205,17 +275,28 @@ nn.on("load", () => {
 
 
     const player = add([
-
+Sprite("player"),
+      pos(center()),
+      anchor("center"),
+      area(),
+      body({
+        jumpForce: JUMP_FORCE,
+      }),
+      doubleJump(),
       // player setup
 
     ]);
 
-
+player.play("foward");
 
     // LEVEL EXIT
 
     const levelExit = add([
-
+rect(10,height()),
+      pos(width()-10,0),
+      area(),
+      color(GREEN),
+      "levelExit",
       // exit setup
 
     ]);
@@ -223,19 +304,20 @@ nn.on("load", () => {
 
 
     // PLATFORMS
-
-    makePlatform(
-
-      // floor platform
-
-    );
+// floor
+    makePlatform(0, height()-24,width(), MAGENTA);
 
 
 
     for (let i = 0; i < 5; i++) {
 
       // random platforms
-
+makePlatform(
+rand(0,width()-250),
+  height()-150-(i *100),
+  rand(50,230),
+  rgb(rand(0,255),0,rand(0,255))
+);
     }
 
 
@@ -249,7 +331,7 @@ nn.on("load", () => {
     }
 
     // collectible loop
-
+loop(5,spawmCollectible)
 
 
     // ENEMIES
@@ -258,12 +340,15 @@ nn.on("load", () => {
 
     // enemy loop
 
-
+loop(15,spawnEnemyWave)
 
     // CONTROLS
 
     onButtonDown("moveRight", () => {
-
+player.move(SPEED,0);
+      facing = RIGHT,
+        playSoundEffect();
+      player.play("right");
       // move right
 
     });
@@ -273,13 +358,17 @@ nn.on("load", () => {
     onButtonDown("moveLeft", () => {
 
       // move left
-
+player.move(-SPEED,0);
+      facing = LEFT;
+     playSoundEffect();
+      player.play("left");
     });
 
 
 
     onButtonDown("moveUp", () => {
-
+player.doubleJump();
+      player.play("forward")
       // jump logic
 
     });
@@ -289,7 +378,8 @@ nn.on("load", () => {
     onButtonDown("moveDown", () => {
 
       // move down
-
+player.move(0, -SPEED)
+      player.play("black")
     });
 
 
@@ -620,3 +710,11 @@ nn.on("load", () => {
   go("level1");
 
 });
+
+
+
+onClick("player", (p) =>{
+  p.use(sprite("kat"));
+  play("bean_voice")
+})
+
