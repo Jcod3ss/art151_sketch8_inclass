@@ -38,8 +38,6 @@ background:[211,211,211]
 
 
   // GLOBAL VARIABLES
-
-
   const SPEED = 120;
   const JUMP_FORCE = 500;
   const DEADZONE = 0.15;
