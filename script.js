@@ -62,7 +62,7 @@ background:[211,211,211]
 
   // sprite file()
   loadSprite(
-    "name", assets/name.png,);{
+    "player","assests/playersprite.png"
 
 // sprite animation
     
@@ -99,8 +99,8 @@ anims: {
 
   // idle sprite
 
-  loadSprite(
-    "name",
+ // loadSprite(
+    //"playersprite",
 
     // sprite file
 
@@ -114,7 +114,7 @@ anims: {
   // enemy sprite
 
   loadSprite(
-    "name", assets/name.png);
+    "poison", assests/potions.png);
 
     // enemy file
   );
@@ -122,7 +122,7 @@ anims: {
   // collectible sprite
 
   loadSprite(
-    "name",assets.name.png);
+    "yum",assests/Food.png);
 
     // collectible file
   );
@@ -132,19 +132,19 @@ anims: {
   // AUDIO ASSETS
 
   loadSound(
-    "name","assets/name.mp3");
+    "wiz","assests/wiz.wav");
 
     // sound file
   );
 
   loadSound(
-    "name", "assets/name.wav");
+    "boom", "assests/thud.wav");
 
     // sound file
   );
 
   loadMusic(
-    "name", "assets/name.wav");
+    "music", "assests/music.mp3");
 
     // music file
   );
@@ -156,14 +156,14 @@ anims: {
   function playSoundEffect () {
 if(!isPlaying){
   isPlaying = true;
-  soundEffect = play("name",
+  soundEffect = play("wiz",
                      { 
     volume: 0.04,
   });
 
 soundEffect.onEnd(() => {
   isPlaying = false;
-})
+});
  // sound logic
 
  }
@@ -197,13 +197,13 @@ soundEffect.onEnd(() => {
   function spawnCollectible () {
 
     add([
-      sprite("kat"),
+      sprite("yum"),
       pos(0,width()),0,height())),
       scale(rand(0.5, 1.5)),
       roate(rand(0,65)),
       area(),
       anchor("center"),
-      "name"
+      "yum"
 
       // collectible setup
 
@@ -216,16 +216,16 @@ soundEffect.onEnd(() => {
   function spawnEnemy () {
 
     const enemy = add([
-      sprite("name"),
+      sprite("poison"),
       pos(rand(100,width()-100),
          rand(100,height()-100)),
       area(),
       anchor("center"),
-      "enemy"
+      "poison"
     ]);
     wait(rand(3,30),()=> {
-      if(enemy.exist()){
-        destroy(enemy);
+      if(poison.exist()){
+        destroy(poison);
       }
     })
 
@@ -238,7 +238,7 @@ soundEffect.onEnd(() => {
   function spawnEnemyWave () {
 const amount = randi(2,5)
     // wave logic
-for(let i = 0, i < amount; i++){
+for(let i = 0; i < amount; i++){
   spawnEnemy();
 }
   }
@@ -379,7 +379,7 @@ player.doubleJump();
 
       // move down
 player.move(0, -SPEED)
-      player.play("black")
+      player.play("back")
     });
 
 
@@ -713,8 +713,8 @@ player.move(0, -SPEED)
 
 
 
-onClick("player", (p) =>{
-  p.use(sprite("kat"));
-  play("bean_voice")
-})
+//onClick("player", (p) =>{
+ // p.use(sprite("kat"));
+ // play("bean_voice")
+//})
 
