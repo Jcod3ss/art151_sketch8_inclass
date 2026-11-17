@@ -122,7 +122,7 @@ anims: {
   // collectible sprite
 
   loadSprite(
-    "yum","assests/Food.png");
+    "yum","assests/food.png");
 
     // collectible file
   //);
