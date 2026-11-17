@@ -62,14 +62,14 @@ background:[211,211,211]
 
   // sprite file()
   loadSprite(
-    "player","assests/playersprite.png"
+    "player","assests/playersprite.png", {
 
 // sprite animation
     
       sliceX: 4,
       sliceY: 4,
 anims: {
-  foward{
+  foward: {
   from: 0,
   to: 3,
   speed: 5,
@@ -87,7 +87,7 @@ anims: {
   speed: 10,
   loop: true,
       },
-      back:
+      back:{
       from:12,
       to: 15,
       speed:10,
@@ -95,7 +95,7 @@ anims: {
 },
      
     },
-  );
+    });
 
   // idle sprite
 
@@ -109,7 +109,7 @@ anims: {
       // frame animation
 
     }
-  );
+  //);
 
   // enemy sprite
 
@@ -117,7 +117,7 @@ anims: {
     "poison", assests/potions.png);
 
     // enemy file
-  );
+  //);
 
   // collectible sprite
 
@@ -125,7 +125,7 @@ anims: {
     "yum",assests/Food.png);
 
     // collectible file
-  );
+  //);
 
 
 
@@ -135,19 +135,19 @@ anims: {
     "wiz","assests/wiz.wav");
 
     // sound file
-  );
+  //);
 
   loadSound(
     "boom", "assests/thud.wav");
 
     // sound file
-  );
+  //);
 
   loadMusic(
     "music", "assests/music.mp3");
 
     // music file
-  );
+ // );
 
 
 
@@ -224,7 +224,7 @@ soundEffect.onEnd(() => {
       "poison"
     ]);
     wait(rand(3,30),()=> {
-      if(poison.exist()){
+      if(poison.exists()){
         destroy(poison);
       }
     })
@@ -361,7 +361,7 @@ player.move(SPEED,0);
 player.move(-SPEED,0);
       facing = LEFT;
      playSoundEffect();
-      player.play("left");
+      player.play('left');
     });
 
 
@@ -389,15 +389,22 @@ player.move(0, -SPEED)
     function shoot () {
 
       add([
-
-        // projectile setup
+        circle(4),
+        color(BLUE),
+        pos(player,pos),
+        anchor("center"),
+        area(),
+        move(facing, 500),
+        offscreen({
+          destroy: true
+        })
+        "bullet",
 
       ]);
 
     }
-
-    // shoot controls
-
+onGamepadButtonPress("south",shoot);
+    onKeyPress("f",shoot);
 
 
     // CAMERA
@@ -411,11 +418,17 @@ player.move(0, -SPEED)
     onUpdate(() => {
 
       // movement logic
-
+const moveDir = getGamepadSrick("left");
+      if(moveDir.len() > DEADZONE){
+        player.move(moveDir.scale(SPEED));
+      }
       // timer logic
-
+timeLeft -=dt();
+      timer.text = timeLeft.toFixed(1);
       // win check
-
+if(timeLeft<= 0){
+  go("win");
+}
       // lose check
 
     });
@@ -424,17 +437,22 @@ player.move(0, -SPEED)
 
     // COLLISIONS
 
-    player.onCollide("collectible", (item) => {
+    player.onCollide("yum", (item) => {
 
       // collect logic
+      destroy(item);
+      play("thud");
+      gameScore+=;
+      scoreText.text = gameScore.toString();
 
     });
 
 
 
-    player.onCollide("enemy", () => {
+    player.onCollide("poison", () => {
 
       // lose logic
+      go("lose");
 
     });
 
@@ -443,7 +461,11 @@ player.move(0, -SPEED)
     onCollide("bullet", "enemy", (bullet, enemy) => {
 
       // projectile collision
-
+destroy(bullet);
+      destroy(enemy);
+      
+      gameScore +=5;
+      scoreText.text = gameScore.toString();
     });
 
 
@@ -451,6 +473,11 @@ player.move(0, -SPEED)
     // TRANSITION EFFECT
 
     const fade = add([
+      rect(width(),height()),
+      pos(0,0),
+      color(BLACK),
+      opacity(0),
+      fixed(),
 
       // fade overlay
 
@@ -461,6 +488,19 @@ player.move(0, -SPEED)
     player.onCollide("levelExit", () => {
 
       // level transition
+      tween(
+      0,
+      1,
+      0.5,
+      (value) =>{
+        fade.opacity = value;
+      },
+        easings.linear
+        );
+      wait(0.5,() =>{
+        spawnSide = "left";
+        go("level2")
+      });
 
     });
 
@@ -471,6 +511,7 @@ player.move(0, -SPEED)
   // LVL 2 SCENE
 
   scene("level2", () => {
+    conole.log("LEVEL2");
 
     setGravity(640);
 
@@ -479,6 +520,12 @@ player.move(0, -SPEED)
 
 
     const scoreText = add([
+      text(gameScore.toString(),{
+        size: 24,
+      }),
+      pos(24,24),
+      color(BLACK),
+      fixed()
 
       // score display
 
@@ -487,6 +534,11 @@ player.move(0, -SPEED)
 
 
     const timer = add([
+      text(timeLeft.toFixed(1)),
+      pos(width() - 24, 24),
+      anchor("topright"),
+      color(BLACK),
+      fixed()
 
       // timer display
 
@@ -495,14 +547,27 @@ player.move(0, -SPEED)
 
 
     const player = add([
+      sprite("player"),
+      pos(spawnSide === "left" ? 150 :width()- 150,
+         height()/2),
+      anchor("center"),
+      area(),
+      body({jumpForce: JUMP_FORCE,}),
+      doubleJump(),
 
       // player setup
 
     ]);
+player.play("foward");
 
 
-
-    const returnExit = add([
+    const returnExit = add
+    rect(10, height()),
+      pos(0,0),
+      area(),
+      color(MAGENTA),
+      //opacity(0),
+      "returnExit",
 
       // return exit
 
@@ -515,18 +580,34 @@ player.move(0, -SPEED)
     makePlatform(
 
       // floor platform
+      makePlatform(
+      0,
+      height()-24,
+      width(),
+      GREEN
 
     );
 
 
 
     // random platforms
+      for(let i = 0; i < 12; i++){
+      makePlatform(
+      rand(0, width()- 300),
+      rand(100, height()- 100),
+      rand(100,350),
+      rgb(0, rand(100,255), rand(100,255))
+      );
+    }
 
 
 
     // ENEMIES
 
     spawnEnemyWave();
+    loop(20,()=>{
+      spawnEnemyWave();
+    })
 
 
 
@@ -545,6 +626,45 @@ player.move(0, -SPEED)
 
 
     // CONTROLS
+    
+     onButtonDown("moveRight", () => {
+player.move(SPEED,0);
+      facing = RIGHT,
+        playSoundEffect();
+      player.play("right");
+      // move right
+
+    });
+
+
+
+    onButtonDown("moveLeft", () => {
+
+      // move left
+player.move(-SPEED,0);
+      facing = LEFT;
+     playSoundEffect();
+      player.play("left");
+    });
+
+
+
+    onButtonDown("moveUp", () => {
+player.doubleJump();
+      player.play("forward")
+      // jump logic
+
+    });
+
+
+
+    onButtonDown("moveDown", () => {
+
+      // move down
+player.move(0, -SPEED)
+      player.play("back")
+    });
+
 
     // movement controls
 
@@ -552,31 +672,46 @@ player.move(0, -SPEED)
 
     // PROJECTILES
 
-    function shoot () {
+   function shoot () {
 
       add([
-
-        // projectile setup
+        circle(4),
+        color(YELLOW),
+        pos(player,pos),
+        anchor("center"),
+        area(),
+        move(facing, 500),
+        offscreen({
+          destroy: true
+        })
+        "bullet",
 
       ]);
 
     }
+onGamepadButtonPress("south",shoot);
+    onKeyPress("f",shoot);
 
 
 
     // COLLISIONS
 
-    player.onCollide("collectible", (item) => {
+     player.onCollide("yum", (item) => {
 
       // collect logic
+      destroy(item);
+      play("thud");
+      gameScore+=;
+      scoreText.text = gameScore.toString();
 
     });
 
 
 
-    player.onCollide("enemy", () => {
+    player.onCollide("poison", () => {
 
       // lose logic
+      go("lose");
 
     });
 
@@ -585,6 +720,23 @@ player.move(0, -SPEED)
     onCollide("bullet", "enemy", (bullet, enemy) => {
 
       // projectile collision
+destroy(bullet);
+      destroy(enemy);
+      
+      gameScore +=5;
+      scoreText.text = gameScore.toString();
+    });
+
+
+
+    onCollide("bullet", "enemy", (bullet, enemy) => {
+
+      // projectile collision
+      destroy(bullet);
+      destroy(enemy);
+      
+      gameScore +=5;
+      scoreText.text = gameScore.toString();
 
     });
 
@@ -592,8 +744,12 @@ player.move(0, -SPEED)
 
     // CAMERA
     // camera scale
+    setCamScale(1.5);
 
     // camera follow
+    player.onUpdate(() =>{
+      getCamPos(player.pos);
+    })
 
 
 
@@ -601,21 +757,30 @@ player.move(0, -SPEED)
 
     onUpdate(() => {
 
-      // movement logic
-
+       // movement logic
+const moveDir = getGamepadSrick("left");
+      if(moveDir.len() > DEADZONE){
+        player.move(moveDir.scale(SPEED));
+      }
       // timer logic
-
+timeLeft -=dt();
+      timer.text = timeLeft.toFixed(1);
       // win check
-
+if(timeLeft<= 0){
+  go("win");
+}
       // lose check
 
     });
 
 
 
-    player.onCollide("returnExit", () => {
+    player.onCollide("returnExit", () =>{
+      spawnSide = "right";
+      go("level1");
 
       // return transition
+      
 
     });
 
@@ -625,9 +790,15 @@ player.move(0, -SPEED)
 
   // WIN GAME SCENE
 
-  scene("win", () => {
+  scene("win", (finalScore) => {
 
     add([
+      text('YOU WIN!\nScore:${gameScore}',{
+        size:32,
+      }),
+      pos(center()),
+      anchor("center"),
+      color(BLACK)
 
       // win text
 
@@ -636,20 +807,33 @@ player.move(0, -SPEED)
 
 
     add([
+      text("press ENTER to play again"),
+      pos(center().add(0,120)),
+      anchor("center"),
+      color(BLACK)
 
       // restart text
-
-    ]);
-
-
-
-    onKeyPress("enter", () => {
-
-      // reset variables
-
-      // restart game
-
+      ]);
+      onKeyPress("enter",() =>{
+      gameScore = 0;
+      timeLeft = 30;
+      go("level1");
     });
+    
+    onLoad(() => {
+    bgm = play ("bgm",{
+      loop: true,
+      volume: 0.5,
+    }),
+
+  });
+
+
+
+  onKeyPress("space", () => {
+    bgm.paused = !bgm.paused;
+
+  });
 
   });
 
@@ -660,6 +844,12 @@ player.move(0, -SPEED)
   scene("lose", () => {
 
     add([
+      text("YOU LOSE",{
+        size: 48,
+      }),
+      color(BLACK),
+      pos(center()),
+      anchor("center"),
 
       // lose text
 
@@ -668,6 +858,10 @@ player.move(0, -SPEED)
 
 
     add([
+      text("Press ENTER to try again"),
+      pos(center().add(0,80)),
+      anchor("center"),
+      color(BLACK),
 
       // restart text
 
@@ -676,6 +870,9 @@ player.move(0, -SPEED)
 
 
     onKeyPress("enter", () => {
+      gameScore = 0;
+      timeLeft=30;
+      go("level1");
 
       // reset variables
 
@@ -687,25 +884,9 @@ player.move(0, -SPEED)
 
 
 
-  // START MUSIC ONCE LOADED
-
-  onLoad(() => {
-
-    // music start
-
-  });
 
 
-
-  onKeyPress("space", () => {
-
-    // music toggle
-
-  });
-
-
-
-  // RESET GAME 
+  // START GAME 
 
   go("level1");
 
