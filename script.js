@@ -69,7 +69,7 @@ background:[211,211,211]
       sliceX: 4,
       sliceY: 4,
 anims: {
-  foward: {
+  forward: {
   from: 0,
   to: 3,
   speed: 5,
@@ -104,17 +104,17 @@ anims: {
 
     // sprite file
 
-    {
+    //{
 
       // frame animation
 
-    }
+   // }
   //);
 
   // enemy sprite
 
   loadSprite(
-    "poison", assests/potions.png);
+    "poison", "assests/potions.png");
 
     // enemy file
   //);
@@ -122,7 +122,7 @@ anims: {
   // collectible sprite
 
   loadSprite(
-    "yum",assests/Food.png);
+    "yum","assests/Food.png");
 
     // collectible file
   //);
@@ -138,7 +138,7 @@ anims: {
   //);
 
   loadSound(
-    "boom", "assests/thud.wav");
+    "thud", "assests/thud.wav");
 
     // sound file
   //);
@@ -164,10 +164,7 @@ if(!isPlaying){
 soundEffect.onEnd(() => {
   isPlaying = false;
 });
- // sound logic
-
- }
-   
+ } 
   }
 
 
@@ -184,10 +181,6 @@ soundEffect.onEnd(() => {
       }),
       color(colorValue),
       "platform"
-      
-
-      // platform setup
-
     ]);
 
   }
@@ -198,15 +191,12 @@ soundEffect.onEnd(() => {
 
     add([
       sprite("yum"),
-      pos(0,width()),0,height())),
+      pos(rand(0,width()),rand(0,height())),
       scale(rand(0.5, 1.5)),
       roate(rand(0,65)),
       area(),
       anchor("center"),
-      "yum"
-
-      // collectible setup
-
+      "yum",
     ]);
 
   }
@@ -215,7 +205,7 @@ soundEffect.onEnd(() => {
 
   function spawnEnemy () {
 
-    const enemy = add([
+    const poison = add([
       sprite("poison"),
       pos(rand(100,width()-100),
          rand(100,height()-100)),
@@ -236,7 +226,7 @@ soundEffect.onEnd(() => {
 
 
   function spawnEnemyWave () {
-const amount = randi(2,5)
+const amount = randi(2,5);
     // wave logic
 for(let i = 0; i < amount; i++){
   spawnEnemy();
@@ -269,7 +259,6 @@ text(timeLeft.toFixed(0)),
       anchor("topright"),
       color(BLACK)
       // timer display
-
     ]);
 
 
@@ -287,7 +276,7 @@ Sprite("player"),
 
     ]);
 
-player.play("foward");
+player.play("forward");
 
     // LEVEL EXIT
 
@@ -346,7 +335,7 @@ loop(15,spawnEnemyWave)
 
     onButtonDown("moveRight", () => {
 player.move(SPEED,0);
-      facing = RIGHT,
+      facing = RIGHT;
         playSoundEffect();
       player.play("right");
       // move right
@@ -391,13 +380,13 @@ player.move(0, -SPEED)
       add([
         circle(4),
         color(BLUE),
-        pos(player,pos),
+        pos(player.pos),
         anchor("center"),
         area(),
         move(facing, 500),
         offscreen({
           destroy: true
-        })
+        }),
         "bullet",
 
       ]);
@@ -418,7 +407,7 @@ onGamepadButtonPress("south",shoot);
     onUpdate(() => {
 
       // movement logic
-const moveDir = getGamepadSrick("left");
+const moveDir = getGamepadStick("left");
       if(moveDir.len() > DEADZONE){
         player.move(moveDir.scale(SPEED));
       }
@@ -442,7 +431,7 @@ if(timeLeft<= 0){
       // collect logic
       destroy(item);
       play("thud");
-      gameScore+=;
+      gameScore+= 1;
       scoreText.text = gameScore.toString();
 
     });
@@ -558,11 +547,11 @@ destroy(bullet);
       // player setup
 
     ]);
-player.play("foward");
+player.play("forward");
 
 
-    const returnExit = add
-    rect(10, height()),
+    const returnExit = add([
+  rect(10, height()),
       pos(0,0),
       area(),
       color(MAGENTA),
@@ -571,22 +560,14 @@ player.play("foward");
 
       // return exit
 
-    ]);
+  ]);
 
 
 
     // PLATFORMS
 
-    makePlatform(
-
       // floor platform
-      makePlatform(
-      0,
-      height()-24,
-      width(),
-      GREEN
-
-    );
+ makePlatform(0,height()-24,width(),GREEN);
 
 
 
@@ -629,7 +610,7 @@ player.play("foward");
     
      onButtonDown("moveRight", () => {
 player.move(SPEED,0);
-      facing = RIGHT,
+      facing = RIGHT;
         playSoundEffect();
       player.play("right");
       // move right
@@ -677,13 +658,13 @@ player.move(0, -SPEED)
       add([
         circle(4),
         color(YELLOW),
-        pos(player,pos),
+        pos(player.pos),
         anchor("center"),
         area(),
         move(facing, 500),
         offscreen({
           destroy: true
-        })
+        }),
         "bullet",
 
       ]);
@@ -701,7 +682,7 @@ onGamepadButtonPress("south",shoot);
       // collect logic
       destroy(item);
       play("thud");
-      gameScore+=;
+      gameScore+= 1;
       scoreText.text = gameScore.toString();
 
     });
@@ -729,18 +710,6 @@ destroy(bullet);
 
 
 
-    onCollide("bullet", "enemy", (bullet, enemy) => {
-
-      // projectile collision
-      destroy(bullet);
-      destroy(enemy);
-      
-      gameScore +=5;
-      scoreText.text = gameScore.toString();
-
-    });
-
-
 
     // CAMERA
     // camera scale
@@ -749,7 +718,7 @@ destroy(bullet);
     // camera follow
     player.onUpdate(() =>{
       getCamPos(player.pos);
-    })
+    });
 
 
 
@@ -758,7 +727,7 @@ destroy(bullet);
     onUpdate(() => {
 
        // movement logic
-const moveDir = getGamepadSrick("left");
+const moveDir = getGamepadStick("left");
       if(moveDir.len() > DEADZONE){
         player.move(moveDir.scale(SPEED));
       }
@@ -798,7 +767,7 @@ if(timeLeft<= 0){
       }),
       pos(center()),
       anchor("center"),
-      color(BLACK)
+      color(BLACK),
 
       // win text
 
@@ -810,7 +779,7 @@ if(timeLeft<= 0){
       text("press ENTER to play again"),
       pos(center().add(0,120)),
       anchor("center"),
-      color(BLACK)
+      color(BLACK),
 
       // restart text
       ]);
@@ -821,10 +790,10 @@ if(timeLeft<= 0){
     });
     
     onLoad(() => {
-    bgm = play ("bgm",{
+    bgm = play ("music",{
       loop: true,
       volume: 0.5,
-    }),
+    });
 
   });
 
