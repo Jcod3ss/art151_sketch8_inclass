@@ -73,13 +73,13 @@ anims: {
   speed: 5,
   loop: true,
 },
-  "left":{
+  left:{
   from: 4,
   to: 7,
   speed: 10,
   loop: true,
       },
-  "right":{
+  right:{
    from: 8,
   to: 11,
   speed: 10,
@@ -90,37 +90,45 @@ anims: {
       to: 15,
       speed:10,
       loop: true,
-},
-     
+}
+}  
     },
-    });
+    );
 
   // idle sprite
 
- // loadSprite(
-    //"playersprite",
-
-    // sprite file
-
-    //{
-
-      // frame animation
-
-   // }
-  //);
 
   // enemy sprite
 
   loadSprite(
-    "poison", "assests/potions.png");
-
+    "poison", "assests/potions.png",{
+  sliceX:0,
+    SliceY:0,
+      anims: {
+        run: {
+          from: 0,
+          to: 3,
+          loop: true,
+        }
+        }
+    });
     // enemy file
   //);
 
   // collectible sprite
 
   loadSprite(
-    "yum","assests/food.png");
+    "yum","assests/food.png",{
+      sliceX:0,
+    SliceY:0,
+      anims: {
+        run: {
+          from: 0,
+          to: 3,
+          loop: true,
+        }
+        }
+    });
 
     // collectible file
   //);
@@ -161,7 +169,7 @@ if(!isPlaying){
 
 soundEffect.onEnd(() => {
   isPlaying = false;
-});
+})
  } 
   }
 
@@ -191,10 +199,10 @@ soundEffect.onEnd(() => {
       sprite("yum"),
       pos(rand(0,width()),rand(0,height())),
       scale(rand(0.5, 1.5)),
-      roate(rand(0,65)),
+      rotate(rand(0,65)),
       area(),
       anchor("center"),
-      "yum",
+      "yum"
     ]);
 
   }
@@ -224,7 +232,7 @@ soundEffect.onEnd(() => {
 
 
   function spawnEnemyWave () {
-const amount = randi(2,5);
+const amount = randi(2,5)
     // wave logic
 for(let i = 0; i < amount; i++){
   spawnEnemy();
@@ -262,7 +270,7 @@ text(timeLeft.toFixed(0)),
 
 
     const player = add([
-Sprite("player"),
+sprite("player"),
       pos(center()),
       anchor("center"),
       area(),
@@ -318,7 +326,7 @@ rand(0,width()-250),
     }
 
     // collectible loop
-loop(5,spawmCollectible)
+loop(5,spawnCollectible);
 
 
     // ENEMIES
@@ -327,7 +335,7 @@ loop(5,spawmCollectible)
 
     // enemy loop
 
-loop(15,spawnEnemyWave)
+loop(15,spawnEnemyWave);
 
     // CONTROLS
 
@@ -365,7 +373,7 @@ player.doubleJump();
     onButtonDown("moveDown", () => {
 
       // move down
-player.move(0, -SPEED)
+player.move(0, -SPEED);
       player.play("back")
     });
 
@@ -410,10 +418,10 @@ const moveDir = getGamepadStick("left");
         player.move(moveDir.scale(SPEED));
       }
       // timer logic
-timeLeft -=dt();
+timeLeft -= dt();
       timer.text = timeLeft.toFixed(1);
       // win check
-if(timeLeft<= 0){
+if(timeLeft <= 0){
   go("win");
 }
       // lose check
@@ -439,7 +447,7 @@ if(timeLeft<= 0){
     player.onCollide("poison", () => {
 
       // lose logic
-      go("lose");
+      go("lose")
 
     });
 
@@ -498,7 +506,7 @@ destroy(bullet);
   // LVL 2 SCENE
 
   scene("level2", () => {
-    conole.log("LEVEL2");
+    console.log("LEVEL2");
 
     setGravity(640);
 
@@ -512,7 +520,7 @@ destroy(bullet);
       }),
       pos(24,24),
       color(BLACK),
-      fixed()
+      fixed(),
 
       // score display
 
@@ -525,7 +533,7 @@ destroy(bullet);
       pos(width() - 24, 24),
       anchor("topright"),
       color(BLACK),
-      fixed()
+      fixed(),
 
       // timer display
 
@@ -534,7 +542,7 @@ destroy(bullet);
 
 
     const player = add([
-      sprite("player"),
+      sprite('player'),
       pos(spawnSide === "left" ? 150 :width()- 150,
          height()/2),
       anchor("center"),
@@ -584,7 +592,7 @@ player.play("forward");
     // ENEMIES
 
     spawnEnemyWave();
-    loop(20,()=>{
+    loop(20,() => {
       spawnEnemyWave();
     })
 
@@ -595,9 +603,10 @@ player.play("forward");
 
 
     // COLLECTIBLES
-
+for (let i = 0; i < 5; i++){
     spawnCollectible();
-
+}
+    loop(5, spawnCollectible);
 
 
     // collectible loop
@@ -640,7 +649,7 @@ player.doubleJump();
     onButtonDown("moveDown", () => {
 
       // move down
-player.move(0, -SPEED)
+player.move(0, -SPEED);
       player.play("back")
     });
 
@@ -690,7 +699,7 @@ onGamepadButtonPress("south",shoot);
     player.onCollide("poison", () => {
 
       // lose logic
-      go("lose");
+      go("lose")
 
     });
 
@@ -716,7 +725,7 @@ destroy(bullet);
     // camera follow
     player.onUpdate(() =>{
       getCamPos(player.pos);
-    });
+    })
 
 
 
@@ -765,7 +774,7 @@ if(timeLeft<= 0){
       }),
       pos(center()),
       anchor("center"),
-      color(BLACK),
+      color(BLACK)
 
       // win text
 
@@ -814,10 +823,10 @@ if(timeLeft<= 0){
       text("YOU LOSE",{
         size: 48,
       }),
-      color(BLACK),
       pos(center()),
       anchor("center"),
-
+      color(BLACK),
+      
       // lose text
 
     ]);
