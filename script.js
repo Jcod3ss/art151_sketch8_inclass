@@ -823,13 +823,13 @@ if(timeLeft<= 0){
       go("level1");
     });
     
-    onLoad(() => {
-    bgm = play ("music",{
-      loop: true,
-      volume: 0.3,
-    });
+   // onLoad(() => {
+    //bgm = play ("music",{
+     // loop: true,
+    // volume: 0.3,
+   // });
 
-  });
+  //});
 
 
 
@@ -890,6 +890,11 @@ if(timeLeft<= 0){
 
 
   // START GAME 
+  
+  bgm = play("music", {
+    loop: true,
+   volume: 0.3
+  });
 
   go("level1");
 
