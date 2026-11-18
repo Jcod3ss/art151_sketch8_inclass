@@ -30,7 +30,7 @@ nn.on("load", () => {
     },
 
     // background color
-background:[211,211,211]
+background:[180,210,230]
     // background settings
 
   });
@@ -48,6 +48,7 @@ background:[211,211,211]
 
   let timeLeft = 30;
   let gameScore = 0;
+  let playerSpeed = 120;
 
   let spawnSide = "left";
 
@@ -198,8 +199,8 @@ soundEffect.onEnd(() => {
     add([
       sprite("yum"),
       pos(rand(0,width()),rand(0,height())),
-      scale(rand(0.5, 1.5)),
-      rotate(rand(0,65)),
+      scale(rand(0.9, 1.2)),
+      rotate(rand(0,180)),
       area(),
       anchor("center"),
       "yum"
@@ -300,7 +301,7 @@ rect(10,height()),
 
     // PLATFORMS
 // floor
-    makePlatform(0, height()-24,width(), MAGENTA);
+    makePlatform(0, height()-24,width(), BLUE);
 
 
 
@@ -309,9 +310,9 @@ rect(10,height()),
       // random platforms
 makePlatform(
 rand(0,width()-250),
-  height()-150-(i *100),
-  rand(50,230),
-  rgb(rand(0,255),0,rand(0,255))
+  height()-180-(i *140),
+  rand(80,160),
+  rgb(0,rand(100,200),255)
 );
     }
 
@@ -327,6 +328,8 @@ rand(0,width()-250),
 
     // collectible loop
 loop(5,spawnCollectible);
+    
+  
 
 
     // ENEMIES
@@ -340,7 +343,7 @@ loop(15,spawnEnemyWave);
     // CONTROLS
 
     onButtonDown("moveRight", () => {
-player.move(SPEED,0);
+player.move(playerSpeed,0);
       facing = RIGHT;
         playSoundEffect();
       player.play("right");
@@ -353,7 +356,7 @@ player.move(SPEED,0);
     onButtonDown("moveLeft", () => {
 
       // move left
-player.move(-SPEED,0);
+player.move(-playerSpeed,0);
       facing = LEFT;
      playSoundEffect();
       player.play('left');
@@ -439,6 +442,19 @@ if(timeLeft <= 0){
       play("thud");
       gameScore+= 1;
       scoreText.text = gameScore.toString();
+      
+      //glowing effect
+      player.color = RED;
+      
+      wait(0.5, () => {
+        player.color = WHITE;
+        //speed
+        playerSpeed = 250;
+        
+        wait(3,() => {
+          playerSpeed = 120;
+        });
+      });
 
     });
 
@@ -578,10 +594,10 @@ player.play("forward");
 
 
     // random platforms
-      for(let i = 0; i < 12; i++){
+      for(let i = 0; i < 8; i++){
       makePlatform(
-      rand(0, width()- 300),
-      rand(100, height()- 100),
+      rand(0, width()- 200),
+      rand(100, height()- 150),
       rand(100,350),
       rgb(0, rand(100,255), rand(100,255))
       );
@@ -612,11 +628,10 @@ for (let i = 0; i < 5; i++){
     // collectible loop
 
 
-
     // CONTROLS
     
      onButtonDown("moveRight", () => {
-player.move(SPEED,0);
+player.move(playerSpeed,0);
       facing = RIGHT;
         playSoundEffect();
       player.play("right");
@@ -629,7 +644,7 @@ player.move(SPEED,0);
     onButtonDown("moveLeft", () => {
 
       // move left
-player.move(-SPEED,0);
+player.move(-playerSpeed,0);
       facing = LEFT;
      playSoundEffect();
       player.play("left");
@@ -691,6 +706,18 @@ onGamepadButtonPress("south",shoot);
       play("thud");
       gameScore+= 1;
       scoreText.text = gameScore.toString();
+        //glowing effect
+      player.color = MAGENTA;
+      
+      wait(0.5, () => {
+        player.color = WHITE;
+        //speed
+        playerSpeed = 250;
+        
+        wait(3,() => {
+          playerSpeed = 150;
+        });
+      });
 
     });
 
@@ -769,7 +796,7 @@ if(timeLeft<= 0){
   scene("win", (finalScore) => {
 
     add([
-      text('YOU WIN!\nScore:${gameScore}',{
+      text('YOU WIN!',{
         size:32,
       }),
       pos(center()),
@@ -799,7 +826,7 @@ if(timeLeft<= 0){
     onLoad(() => {
     bgm = play ("music",{
       loop: true,
-      volume: 0.5,
+      volume: 0.3,
     });
 
   });
