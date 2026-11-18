@@ -164,7 +164,7 @@ if(!isPlaying){
   isPlaying = true;
   soundEffect = play("wiz",
                      { 
-    volume: 0.04,
+    volume: 0.08,
   });
 
 soundEffect.onEnd(() => {
@@ -385,7 +385,7 @@ player.move(0, -SPEED);
 
       add([
         circle(4),
-        color(BLUE),
+        color(GREEN),
         pos(player.pos),
         anchor("center"),
         area(),
@@ -664,7 +664,7 @@ player.move(0, -SPEED);
 
       add([
         circle(4),
-        color(YELLOW),
+        color(RED),
         pos(player.pos),
         anchor("center"),
         area(),
